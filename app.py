@@ -11,13 +11,13 @@ posts = [
         'author': 'Michael Gibney',
         'title': 'Blog Post 1',
         'content': 'First post content',
-        'date-posted': 'April 12, 2022'
+        'date_posted': 'April 12, 2022'
     },
     {
         'author': 'Connor Gibney',
         'title': 'Naruto is AWESOME!',
         'content': 'Doo Doo',
-        'date-posted': 'April 14, 2022'
+        'date_posted': 'April 14, 2022'
     },
 ]
 
