@@ -24,12 +24,12 @@ posts = [
 @app.route("/")
 @app.route("/home")
 def home():
-    return render_template('home.html', title='Home', posts=posts)
+    return render_template('home.html', title='Home', posts=posts, icon='fa-blog')
 
 
 @app.route("/about")
 def about():
-    return render_template('about.html', title='About')
+    return render_template('about.html', title='About', icon='fa-info')
 
 
 @app.route("/register", methods=['GET', 'POST'])
@@ -72,14 +72,14 @@ def logout():
 @app.route("/account")
 @login_required
 def account():
-    return render_template('account.html', title='Account')
+    return render_template('account.html', title='Account', icon='fa-user-circle')
 
 
 @app.route("/cookies")
 def cookies():
     cookies = request.cookies
     flavor = cookies.get('flavor')
-    res = make_response(render_template('cookies.html', cookies=cookies, flavor=flavor))
+    res = make_response(render_template('cookies.html', cookies=cookies, flavor=flavor, icon='fa-cookie'))
     res.set_cookie(
         'flavor', 
         value='mint chocolate chip',
