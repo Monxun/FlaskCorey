@@ -1,6 +1,6 @@
 from app.models import User, Post
 from app.forms import RegistrationForm, LoginForm
-from flask import render_template, url_for, flash, redirect, request
+from flask import render_template, url_for, flash, redirect, request, make_response
 from app import app, db, bcrypt
 from flask_login import login_user, current_user, logout_user, login_required
 
@@ -73,3 +73,21 @@ def logout():
 @login_required
 def account():
     return render_template('account.html', title='Account')
+
+
+@app.route("/cookies")
+def cookies():
+    cookies = request.cookies
+    flavor = cookies.get('flavor')
+    res = make_response(render_template('cookies.html', cookies=cookies, flavor=flavor))
+    res.set_cookie(
+        'flavor', 
+        value='mint chocolate chip',
+        max_age=10,
+        expires=None,
+        path=request.path,
+        domain=None,
+        secure=False,
+        httponly=False
+        )
+    return res
