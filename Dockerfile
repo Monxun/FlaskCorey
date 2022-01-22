@@ -4,10 +4,9 @@ RUN apt-get update -y && \
     apt-get upgrade && \
     apt install git -y && \
     apt install curl -y && \
-    curl https://sh.rustup.rs -sSf | sh -y && \
+    curl https://sh.rustup.rs -sSf | sh && \
     git clone https://github.com/rust-lang/cargo && \
-    mkdir cargo && \
-    cd cargo && \
+    cd rust-lang/cargo && \
     cargo build --release && \
     cd /app
 
