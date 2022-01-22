@@ -4,6 +4,8 @@ WORKDIR /code
 
 COPY ./requirements.txt /code/requirements.txt
 
+RUN apt-get install -y gunicorn
+
 RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 
 COPY ./project /code/app
