@@ -11,6 +11,6 @@ RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 
 COPY ./app /code/app
 
-RUN export FLASK_APP=run.py && \
+CMD export FLASK_APP=run.py && \
     export FLASK_ENV=development && \
     python app/run.py
