@@ -4,6 +4,6 @@ COPY ./requirements.txt /app/requirements.txt
 
 RUN pip install --no-cache-dir --upgrade -r /app/requirements.txt
 
-RUN chmod +x run.sh
+RUN chmod +x /run.sh
 
 COPY ./project /app
