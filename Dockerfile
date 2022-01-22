@@ -1,7 +1,8 @@
 FROM python:3.6.15-slim-bullseye
 
 RUN apt-get update -y && \
-    apt-get upgrade
+    apt-get upgrade && \
+    apt install git
 
 # We copy just the requirements.txt first to leverage Docker cache
 COPY ./requirements.txt /app/requirements.txt
