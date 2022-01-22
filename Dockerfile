@@ -1,16 +1,11 @@
-FROM python:3.6.15-slim-bullseye
+FROM python:3.6
 
-RUN apt-get update -y && \
-    apt-get upgrade
-# We copy just the requirements.txt first to leverage Docker cache
-COPY ./requirements.txt /app/requirements.txt
+WORKDIR /code
 
-WORKDIR /app
+COPY ./requirements.txt /code/requirements.txt
 
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 
-COPY . /app
+COPY ./app /code/app
 
-ENTRYPOINT [ "python" ]
-
-CMD [ "run.py" ]
+CMD ["gunicorn", "--conf", "app/gunicorn_conf.py", "--bind", "0.0.0.0:80", "app.main:app"]
