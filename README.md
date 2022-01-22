@@ -5,19 +5,11 @@ Requirements: Python 3.6
 
 Step 1:
 
-    pip install -r requirements
+    docker build -t flask .
 
 Step 2: 
 
-    python
-    from app import db
-    db.create_all()
-    exit()
+    docker run -d --name Flask -p 5000:5000 flask
 
-Step 3:
 
-    python run.py
-
-Step 4:
-
-View app in browser link
+View app in browser link 0.0.0.0:5000
