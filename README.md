@@ -13,3 +13,5 @@ Step 2:
 
 
 View app in browser link 0.0.0.0:5000
+
+[Home Page](https://github.com/Monxun/FlaskCorey/blob/main/home.PNG?raw=true)
