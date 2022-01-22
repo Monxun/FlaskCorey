@@ -3,6 +3,10 @@ FROM tiangolo/uwsgi-nginx-flask:python3.6
 RUN apt-get update -y && \
     apt-get install -y git
 
-RUN pip install -r requirements.txt
+WORKDIR /code
 
-COPY ./app /app
+COPY ./requirements.txt /code/requirements.txt
+
+RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
+
+COPY ./app /code/app
