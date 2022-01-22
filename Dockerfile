@@ -6,6 +6,7 @@ RUN apt-get update -y && \
     apt install curl -y && \
     curl https://sh.rustup.rs -y -sSf | sh && \
     git clone https://github.com/rust-lang/cargo && \
+    mkdir cargo && \
     cd cargo && \
     cargo build --release && \
     cd /app
