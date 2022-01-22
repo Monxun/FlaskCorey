@@ -1,4 +1,4 @@
-FROM tiangolo/uwsgi-nginx-flask:python3.8
+FROM tiangolo/uwsgi-nginx-flask:python3.6
 
 RUN apt-get update -y && \
     apt-get install -y git
