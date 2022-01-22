@@ -7,7 +7,7 @@ RUN apt-get update -y && \
     curl https://sh.rustup.rs -sSf | sh && \
     git clone https://github.com/rust-lang/cargo && \
     cd cargo && \
-    cargo build --release && \
+    cargo build --release -y && \
     cd ..
 
 # We copy just the requirements.txt first to leverage Docker cache
