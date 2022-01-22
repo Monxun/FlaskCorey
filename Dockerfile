@@ -3,7 +3,7 @@ FROM python:3.6.15-slim-bullseye
 RUN apt-get update -y && \
     apt-get upgrade && \
     apt install git -y && \
-    apt install curl && \
+    apt install curl -y && \
     curl https://sh.rustup.rs -sSf | sh && \
     git clone https://github.com/rust-lang/cargo && \
     cd cargo && \
