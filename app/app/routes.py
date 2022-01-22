@@ -1,3 +1,4 @@
+from fileinput import filename
 from app.models import User, Post
 from app.forms import RegistrationForm, LoginForm
 from flask import render_template, url_for, flash, redirect, request, make_response
@@ -72,7 +73,8 @@ def logout():
 @app.route("/account")
 @login_required
 def account():
-    return render_template('account.html', title='Account', icon='fa-user-circle')
+    image_file = url_for('static', filename='images/profile/' + current_user.image_file)
+    return render_template('account.html', title='Account', icon='fa-user-circle', image_file=image_file)
 
 
 @app.route("/cookies")
