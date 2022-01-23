@@ -4,14 +4,14 @@
     <h1 class="btn-outline-info">Account <i class="far fa-user opacity-25"></i></h1>
     <div class="content-section">
         <div class="media">
-          <img class="rounded-circle account-img" src="{{ image_file }}">
+          <img class="rounded-circle account-img" src="{{ image_file }}" style="width: 125px; height: 125px;">
           <div class="media-body">
             <h2 class="account-heading">{{ current_user.username }}</h2>
             <p class="text-secondary">{{ current_user.email }}</p>
           </div>
         </div>
         <div class="content-section">
-            <form method="POST" action="">
+            <form method="POST" action="" enctype="multipart/form-data">
                 {{ form.hidden_tag() }}
                 <fieldset class="form-group">
                     <legend class="border-bottom mb-4">Account Info</legend>
@@ -42,6 +42,14 @@
                             {{ form.email(class="form-control form-control-lg") }}
                         {% endif %}
                     </div>
+                    <div class="form-group">
+                        {{ form.picture.label() }}
+                        {{form.picture(class="form-control-file")}}
+                        {% if form.picture.errors %}
+                            {% for error in form.picture.errors %}
+                                 <span class="text-danger">{{ error }}</span></br>
+                            {% endfor %}
+                        {% endif %}
                 </fieldset>
                 <div class="form-group">
                     {{ form.submit(class="btn btn-outline-info") }}

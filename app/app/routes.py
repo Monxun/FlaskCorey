@@ -1,30 +1,19 @@
+import secrets
+import os
+from PIL import Image
 from fileinput import filename
 from app.models import User, Post
-from app.forms import RegistrationForm, LoginForm, UpdateAccountForm
+from app.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostForm
 from flask import render_template, url_for, flash, redirect, request, make_response
 from app import app, db, bcrypt
 from flask_login import login_user, current_user, logout_user, login_required
-
-posts = [
-    {
-        'author': 'Michael Gibney',
-        'title': 'Blog Post 1',
-        'content': 'First post content',
-        'date_posted': 'April 12, 2022'
-    },
-    {
-        'author': 'Connor Gibney',
-        'title': 'Naruto is AWESOME!',
-        'content': 'Doo Doo',
-        'date_posted': 'April 14, 2022'
-    },
-]
 
 
 
 @app.route("/")
 @app.route("/home")
 def home():
+    posts = Post.query.all()
     return render_template('home.html', title='Home', posts=posts, icon='fa-blog')
 
 
@@ -70,11 +59,27 @@ def logout():
     return render_template('home.html', title='Home', posts=posts)
 
 
+def save_picture(form_picture):
+    random_hex = secrets.token_hex(8)
+    _, f_ext = os.path.splitext(form_picture.filename)
+    picture_fn = random_hex + f_ext
+    picture_path = os.path.join(app.root_path, 'static/images/profile', picture_fn)
+
+    output_size = (125, 125)
+    i = Image.open(form_picture)
+    i.thumbnail(output_size)
+    i.save(picture_path)
+    return picture_fn
+
+
 @app.route("/account", methods=['GET', 'POST'])
 @login_required
 def account():
     form = UpdateAccountForm()
     if form.validate_on_submit():
+        if form.picture.data:
+            picture_file = save_picture(form.picture.data)
+            current_user.image_file = picture_file
         current_user.username = form.username.data
         current_user.email = form.email.data
         db.session.commit()
@@ -103,3 +108,22 @@ def cookies():
         httponly=False
         )
     return res
+
+
+@app.route("/post/new", methods=['GET', 'POST'])
+@login_required
+def new_post():
+    form = PostForm()
+    if form.validate_on_submit():
+        post = Post(title=form.title.data, content=form.content.data, author=current_user)
+        db.session.add(post)
+        db.session.commit()
+        flash('Your post has been created!', 'success')
+        return redirect(url_for('home'))
+    return render_template('create_post.html', title='New Post', form=form)
+
+
+@app.route("/post/<post_id>", methods=['GET', 'POST'])
+@login_required
+def post(post_id):
+    post = Post.query.get_or_404(post_id)
