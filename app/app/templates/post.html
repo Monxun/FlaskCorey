@@ -11,8 +11,31 @@
             <small class="text-muted">{{ post.date_posted.strftime('%Y-%m-%d') }}</small>
             <br>
             <p class="card-text">{{ post.content }}</p>
+            {% if post.author == current_user %}
+                <div class="">
+                    <a class="btn btn-secondary btn-sm m-1" href="{{ url_for('update_post', post_id=post.id) }}">Update</a>
+                    <button type="button" class="btn btn-danger btn-sm m-1" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button>
+                </div>
+            {% endif %}
         </div>
     </div> 
 </article>
 
+<!-- Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteModalLabel">Delete post?</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <form action="{{ url_for('delete_post', post_id=post.id) }}" method="POST">
+              <input type="submit" class="btn btn-danger" value="Delete">
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock content %}
