@@ -3,11 +3,11 @@
 
 <h1 class="btn-outline-info">Posts <i class="fab fa-pied-piper-alt opacity-75"></i></h1>
 <article class="media content-section">
-    <img class="rounded-circle article-image" style="float: left; padding: 25px 25px; width: 125px; height: 125px;" src="{{ url_for('static', filename='images/profile/' + post.author.image_file) }}" alt="">
+    
     <div class="card">
         <h5 class="card-header">{{ post.author.username }}</h5>
         <div class="card-body">
-            <h5 class="card-title"><a href="{{ url_for('post', post_id=post.id) }}" class="article-title">{{ post.title }}</a></h5>
+            <h5 class="card-title"><img class="rounded-circle article-image" style="float: left; padding: 25px 25px; width: 125px; height: 125px;" src="{{ url_for('static', filename='images/profile/' + post.author.image_file) }}" alt=""><a href="{{ url_for('post', post_id=post.id) }}" class="article-title">{{ post.title }}</a></h5>
             <small class="text-muted">{{ post.date_posted.strftime('%Y-%m-%d') }}</small>
             <br>
             <p class="card-text">{{ post.content }}</p>
