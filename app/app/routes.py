@@ -1,4 +1,5 @@
 import secrets
+import random
 import os
 from PIL import Image
 from fileinput import filename
@@ -94,12 +95,14 @@ def account():
 
 @app.route("/cookies")
 def cookies():
+    flavors = ['x', 'thin mint', 'snickerdoodle', 'chocolate chip', 'oreo', 'peanut butter']
+    number = random.randint(1, 6)
     cookies = request.cookies
     flavor = cookies.get('flavor')
     res = make_response(render_template('cookies.html', cookies=cookies, flavor=flavor, icon='fa-cookie'))
     res.set_cookie(
         'flavor', 
-        value='mint chocolate chip',
+        value=flavors[number],
         max_age=10,
         expires=None,
         path=request.path,
