@@ -96,7 +96,7 @@ def account():
 @app.route("/cookies")
 def cookies():
     flavors = ['x', 'thin mint', 'snickerdoodle', 'chocolate chip', 'oreo', 'peanut butter']
-    number = random.randint(1, 6)
+    number = random.randint(1, 5)
     cookies = request.cookies
     flavor = cookies.get('flavor')
     res = make_response(render_template('cookies.html', cookies=cookies, flavor=flavor, icon='fa-cookie'))
