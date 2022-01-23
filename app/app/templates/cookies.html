@@ -4,6 +4,6 @@
     <h1 class="btn-outline-info">Cookies <i class="fas fa-cookie-bite opacity-25"></i></h1>
     <h3 class="text-muted">{{ flavor }}</h3>
     <div class="container">
-        <img src="./app/static/images/cookie_storage.png" alt="cookie storage image">
+        <img src="{{ url_for('static', filename='images/cookies_storage.png') }}" alt="cookie storage image">
     </div>
 {% endblock content %}
