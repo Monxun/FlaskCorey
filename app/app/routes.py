@@ -5,7 +5,7 @@ from PIL import Image
 from fileinput import filename
 from app.models import User, Post
 from app.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostForm
-from flask import render_template, url_for, flash, redirect, request, make_response
+from flask import render_template, url_for, flash, redirect, request, make_response, abort
 from app import app, db, bcrypt
 from flask_login import login_user, current_user, logout_user, login_required
 
@@ -15,12 +15,18 @@ from flask_login import login_user, current_user, logout_user, login_required
 @app.route("/home")
 def home():
     posts = Post.query.all()
-    return render_template('home.html', title='Home', posts=posts, icon='fa-blog')
+    try:
+        return render_template('home.html', title='Home', posts=posts, icon='fa-blog')
+    except:
+        return abort(404)
 
 
 @app.route("/about")
 def about():
-    return render_template('about.html', title='About', icon='fa-info')
+    try:
+        return render_template('about.html', title='About', icon='fa-info')
+    except:
+        return abort(404)
 
 
 @app.route("/register", methods=['GET', 'POST'])
@@ -42,13 +48,18 @@ def register():
 def login():
     if current_user.is_authenticated:
         return redirect(url_for('home'))
+   
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
-        if user and bcrypt.check_password_hash(user.password, form.password.data):
+        if user.email != 'admin@monxuncode.com' and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
             next_page = request.args.get('next')
             return redirect(next_page) if next_page else redirect(url_for('home'))
+        elif user.email == 'admin@monxuncode.com' and bcrypt.check_password_hash(user.password, form.password.data):
+            login_user(user, remember=form.remember.data)
+            next_page = request.args.get('next')
+            return redirect(next_page) if next_page else redirect(url_for('admin'))
         else:
             flash('Login Unsuccessful. Please check email and password', 'danger')
     return render_template('login.html', title='Login', form=form)
@@ -57,6 +68,7 @@ def login():
 @app.route("/logout")
 def logout():
     logout_user()
+    posts = Post.query.all()
     return render_template('home.html', title='Home', posts=posts)
 
 
@@ -130,3 +142,11 @@ def new_post():
 @login_required
 def post(post_id):
     post = Post.query.get_or_404(post_id)
+    return render_template('post.html', title=post.title, post=post)
+
+
+@app.route("/admin")
+@login_required
+def admin():
+    users = User.query.all()
+    return render_template('admin.html', title='Admin', users=users, icon='fa-folder')

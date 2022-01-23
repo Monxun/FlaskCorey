@@ -8,11 +8,11 @@
         <div class="card">
             <h5 class="card-header">{{ post.author.username }}</h5>
             <div class="card-body">
-                <h5 class="card-title">{{ post.title }}</h5>
+                <h5 class="card-title"><a href="{{ url_for('post', post_id=post.id) }}" class="article-title">{{ post.title }}</a></h5>
                 <small class="text-muted">{{ post.date_posted.strftime('%Y-%m-%d') }}</small>
                 <br>
                 <p class="card-text">{{ post.content }}</p>
-                <a href="#" class="btn btn-outline-info">View Post</a>
+                <a href="{{ url_for('post', post_id=post.id) }}" class="btn btn-outline-info">View Post</a>
             </div>
         </div> 
     </article>
