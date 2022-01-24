@@ -5,3 +5,4 @@ Flask-SQLAlchemy==2.5.1
 Flask-WTF==1.0.0
 email_validator
 pillow
+flask-mail
