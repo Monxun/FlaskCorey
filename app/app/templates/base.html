@@ -79,7 +79,9 @@
         <div class="content-section">
           <i class="fas {{ icon }} opacity-50"></i>
           <h3>Our Sidebar</h3>
-          <p class="text-muted">Username: {{ current_user.username }}</p>
+          {% if current_user.is_authenticated %}
+            <p class="text-muted">Username: {{ current_user.username }}</p>
+          {% endif %}
           <ul class="list-group">
             <li class="list-group-item list-group-item-light btn-outline-info">Latest Posts</li>
             <li class="list-group-item list-group-item-light btn-outline-info">Announcements</li>

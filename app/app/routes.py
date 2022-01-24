@@ -1,20 +1,22 @@
+import re
 import secrets
 import random
 import os
 from PIL import Image
 from fileinput import filename
 from app.models import User, Post
-from app.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostForm
+from app.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostForm, RequestResetForm, ResetPasswordForm
 from flask import render_template, url_for, flash, redirect, request, make_response, abort
-from app import app, db, bcrypt
+from app import app, db, bcrypt, mail
 from flask_login import login_user, current_user, logout_user, login_required
-
+from flask_mail import Message
 
 
 @app.route("/")
 @app.route("/home")
 def home():
-    posts = Post.query.all()
+    page = request.args.get('page', 1, type=int)
+    posts = Post.query.order_by(Post.date_posted.desc()).paginate(page=page, per_page=3)
     try:
         return render_template('home.html', title='Home', posts=posts, icon='fa-blog')
     except:
@@ -68,10 +70,14 @@ def login():
 @app.route("/logout")
 def logout():
     logout_user()
-    posts = Post.query.all()
-    return render_template('home.html', title='Home', posts=posts)
+    page = request.args.get('page', 1, type=int)
+    posts = Post.query.order_by(Post.date_posted.desc()).paginate(page=page, per_page=3)
+    try:
+        return render_template('home.html', title='Home', posts=posts, icon='fa-blog')
+    except:
+        return abort(404)
 
-
+        
 def save_picture(form_picture):
     random_hex = secrets.token_hex(8)
     _, f_ext = os.path.splitext(form_picture.filename)
@@ -176,9 +182,61 @@ def delete_post(post_id):
     return redirect(url_for('home'))
 
 
+@app.route("/user/<string:username>")
+def user_posts(username):
+    page = request.args.get('page', 1, type=int)
+    user = User.query.filter_by(username=username).first_or_404()
+    posts = Post.query.filter_by(author=user)\
+            .order_by(Post.date_posted.desc())\
+            .paginate(page=page, per_page=3)
+    return render_template('user_posts.html', title='User Posts', posts=posts, user=user, icon='fa-blog')
+    
 
 @app.route("/admin")
 @login_required
 def admin():
     users = User.query.all()
     return render_template('admin.html', title='Admin', users=users, icon='fa-folder')
+
+
+def send_reset_email(user):
+    token = user.get_reset_token()
+    msg = Message('Password Reset Request', sender='noreply@demo.com', recipients=[user.email])
+    msg.body = f"""
+        To reset your password visit the following link:
+        {url_for('reset_token', token=token, _external=True)}
+
+        If you did not make this request then ignore this email and no changes will be made.
+    """
+
+
+@app.route("/reset_password", methods=['GET', 'POST'])
+def reset_request():
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
+    form = RequestResetForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        send_reset_email(user)
+        flash('An email has been sent with instructions to reset your password', 'info')
+        return redirect(url_for('login'))
+    return render_template('reset_request.html', title='Reset Password', form=form, icon='fa-folder')
+
+
+@app.route("/reset_password/<token>", methods=['GET', 'POST'])
+def reset_token(token):
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
+    user = User.verify_reset_token
+    if user is None:
+        flash('That is an invalid or expired token', 'warning')
+        return redirect(url_for('reset_request'))
+    form = ResetPasswordForm()
+    if form.validate_on_submit():
+        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        user.password = hashed_password
+        db.session.commit()
+        flash('Your password has been updated! You are now able to log in', 'success')
+        return redirect(url_for('login'))
+    return render_template('reset_token.html', title='Reset Password', form=form)
+    

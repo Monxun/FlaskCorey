@@ -1,14 +1,16 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1 class="btn-outline-info">Posts <i class="fab fa-pied-piper-alt opacity-75"></i></h1>
+
+    <h1 class="btn-outline-info">Posts by: <i class="fab fa-pied-piper-alt opacity-75"></i></h1>
+    <h3>{{ user.username }} ({{ posts.total }})</h3>
     {% for post in posts.items %}
     <article class="media content-section">
 
         <div class="card">
             <h5 class="card-header"><a href="{{ url_for('user_posts', username=post.author.username) }}">{{ post.author.username }}</a></h5>
             <div class="card-body">
-                <h5 class="card-title"><img class="rounded-circle" style="float: left; padding: 15px; width: 125px; height: 125px;" src="{{ url_for('static', filename='images/profile/' + post.author.image_file) }}" alt=""><a href="{{ url_for('post', post_id=post.id) }}" class="article-title">{{ post.title }}</a></h5>
+                <h5 class="card-title"><img class="rounded-circle article-image" style="float: left; padding: 25px 25px; width: 125px; height: 125px;" src="{{ url_for('static', filename='images/profile/' + post.author.image_file) }}" alt=""><a href="{{ url_for('post', post_id=post.id) }}" class="article-title">{{ post.title }}</a></h5>
                 <small class="text-muted">{{ post.date_posted.strftime('%Y-%m-%d') }}</small>
                 <br>
                 <p class="card-text">{{ post.content }}</p>
@@ -20,12 +22,12 @@
     {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
         {% if page_num %}
             {% if posts.page == page_num %}
-                <a class="btn btn-info mb-4" href="{{ url_for('home', page=page_num) }}">{{ page_num }}</a>
+                <a class="btn btn-info mb-4" href="{{ url_for('user_posts', username=user.username, page=page_num) }}">{{ page_num }}</a>
             {% else %}
-                <a class="btn btn-outline-info mb-4" href="{{ url_for('home', page=page_num) }}">{{ page_num }}</a>
+                <a class="btn btn-outline-info mb-4" href="{{ url_for('user_posts', username=user.username, page=page_num) }}">{{ page_num }}</a>
             {% endif %}
         {% else %}
-            ...   
+            
         {% endif %}
     {% endfor %}
 {% endblock content %}
